@@ -30,6 +30,7 @@ def main() -> int:
             try:
                 out_path, pages = extract(
                     msg["path"],
+                    msg["out_path"],
                     msg.get("mode", "fast"),
                     lambda pct, m, tid=task_id: p.send(p.progress(tid, pct, m)),
                 )

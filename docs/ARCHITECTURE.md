@@ -44,7 +44,7 @@ that do the heavy or domain-specific work.
 | `rdw-model` | Entities and enums, serde only | anything with I/O |
 | `rdw-graph` | Adjacency-list graph, BFS traversal, cycle checks, undo `History<T>` | disk, UI |
 | `rdw-providers` | `LlmClient` / `CitationLookup` traits, `Router`, `TokenBucket`, handoff | UI |
-| `rdw-ipc` | `Request` / `Response` protocol + framing codec | core, UI |
+| `rdw-ipc` | `Request` / `Response` protocol, framing codec, worker `Supervisor` | core, UI |
 | `rdw-store` | `Store` trait, `SqliteStore` (WAL), `MemoryStore` | core, UI |
 | `rdw-core` | `Workspace`, intents, persistence, seed data, search | UI toolkit |
 | `rdw-desktop` | Window, theme, fonts, one module per screen | — |

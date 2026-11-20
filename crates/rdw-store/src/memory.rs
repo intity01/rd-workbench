@@ -37,6 +37,11 @@ impl Store for MemoryStore {
         Ok(())
     }
 
+    fn delete_source(&mut self, id: &SourceId) -> Result<()> {
+        self.sources.remove(id);
+        Ok(())
+    }
+
     fn save_graph(&mut self, project: &ProjectId, nodes: &[GNode], edges: &[Edge]) -> Result<()> {
         self.graphs.insert(project.clone(), (nodes.to_vec(), edges.to_vec()));
         Ok(())

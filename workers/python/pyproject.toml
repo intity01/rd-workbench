@@ -8,8 +8,10 @@ dependencies = []
 
 [project.optional-dependencies]
 # Heavy, model-backed extraction. Check each project's model-weight licence before use.
+# PDF text layer (fast tier). BSD-3-Clause.
+pdf = ["pypdf"]
 marker = ["marker-pdf"]
-dev = ["pytest", "ruff"]
+dev = ["pytest", "ruff", "pypdf"]
 
 [build-system]
 requires = ["hatchling"]

@@ -17,7 +17,7 @@ cargo xtask check-size                      # ≤ 250 lines per .rs/.py/.ts/.tsx
 - `crates/rdw-model` entities only (serde, no I/O)
 - `crates/rdw-graph` in-RAM graph + `History<T>`
 - `crates/rdw-providers` LLM router, citation policies, `TokenBucket`, deep-research handoff
-- `crates/rdw-ipc` worker protocol; Python mirror in `workers/python/rdw_worker/protocol.py`
+- `crates/rdw-ipc` worker protocol and `Supervisor` (tests use `tests/support/fake_worker.rs`); Python mirror in `workers/python/rdw_worker/protocol.py`
 - `crates/rdw-store` `Store` trait, `SqliteStore` (WAL), `MemoryStore`
 - `crates/rdw-core` `Workspace` (state + intents), persistence, search, DOI cache
 - `apps/rdw-desktop` window, theme, fonts, `screens/<name>.rs`

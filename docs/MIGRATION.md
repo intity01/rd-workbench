@@ -27,7 +27,7 @@ inside `prototype/web`.
 | Home | `features/home` | first cut |
 | Projects | `features/projects` | list, create, edit, delete |
 | Research | `features/research` | assistant + handoff; reader pane to do |
-| Imports | `features/imports` | to do |
+| Imports | `features/imports` | file picker, drop, queue, cancel, retry |
 | Verify | `features/verify` | DOI lookup and title check |
 | Library | `features/library` | search (naive) |
 | Knowledge map | `features/map` | pan, zoom, drag, connect, edit, undo |

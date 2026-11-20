@@ -1,5 +1,5 @@
 use crate::{GraphSnapshot, Result, Store};
-use rdw_model::{Edge, GNode, Project, ProjectId, Source};
+use rdw_model::{Edge, GNode, Project, ProjectId, Source, SourceId};
 use rusqlite::{Connection, OptionalExtension, params};
 use serde::{Serialize, de::DeserializeOwned};
 use std::path::Path;
@@ -89,6 +89,11 @@ impl Store for SqliteStore {
              ON CONFLICT(id) DO UPDATE SET project_id = excluded.project_id, doc = excluded.doc",
             params![source.id.as_str(), source.project_id.as_str(), encode(source)?],
         )?;
+        Ok(())
+    }
+
+    fn delete_source(&mut self, id: &SourceId) -> Result<()> {
+        self.conn.execute("DELETE FROM sources WHERE id = ?1", [id.as_str()])?;
         Ok(())
     }
 

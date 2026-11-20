@@ -53,6 +53,12 @@ pub struct Source {
     pub url: Option<String>,
     pub pages: u32,
     pub abstract_text: String,
+    /// Original file on disk, for imported documents.
+    #[serde(default)]
+    pub file_path: Option<String>,
+    /// Extracted Markdown, inside the app's data folder.
+    #[serde(default)]
+    pub text_path: Option<String>,
 }
 
 /// A free-form note, optionally anchored to a page of a source.

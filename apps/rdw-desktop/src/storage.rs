@@ -5,8 +5,12 @@ use rdw_core::store::SqliteStore;
 use std::path::PathBuf;
 
 /// `%APPDATA%\rd-workbench\data` on Windows, `~/.local/share/rd-workbench` on Linux,
-/// `~/Library/Application Support/rd-workbench` on macOS.
+/// `~/Library/Application Support/rd-workbench` on macOS. `RDW_DATA_DIR` overrides it
+/// (useful for a throwaway profile while testing).
 pub fn data_dir() -> Option<PathBuf> {
+    if let Some(dir) = std::env::var_os("RDW_DATA_DIR") {
+        return Some(PathBuf::from(dir));
+    }
     ProjectDirs::from("", "", "rd-workbench").map(|d| d.data_dir().to_path_buf())
 }
 

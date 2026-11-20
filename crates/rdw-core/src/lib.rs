@@ -4,6 +4,7 @@
 //! operations. The UI never mutates entities directly; it calls methods here.
 //! Persistence goes through the [`store::Store`] trait (SQLite in the app).
 
+pub mod imports;
 mod nodes;
 mod persist;
 mod projects;

@@ -2,6 +2,7 @@
 
 use crate::{Workspace, WorkspaceError};
 use rdw_graph::Graph;
+use rdw_model::ProcStatus;
 use rdw_store::Store;
 use std::collections::HashSet;
 
@@ -23,6 +24,10 @@ impl Workspace {
         let projects = store.load_projects()?;
         let mut ws = Self::empty();
         ws.sources = store.load_sources()?;
+        // An extraction interrupted by quitting the app runs again.
+        for s in ws.sources.iter_mut().filter(|s| s.status == ProcStatus::Running) {
+            s.status = ProcStatus::Queued;
+        }
 
         let mut graph = Graph::new();
         let mut edges = Vec::new();
@@ -46,6 +51,9 @@ impl Workspace {
         }
         for id in self.deleted_projects.drain(..) {
             store.delete_project(&id)?;
+        }
+        for id in self.deleted_sources.drain(..) {
+            store.delete_source(&id)?;
         }
         for p in &self.projects {
             store.save_project(p)?;

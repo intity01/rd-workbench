@@ -53,12 +53,17 @@ cargo test --workspace       # unit tests
 cargo xtask check-size       # enforce the 250-line file budget
 ```
 
-Python worker (optional for now):
+Document imports use the Python worker (Python 3.11+). The app starts it by itself
+the first time you import something; text, Markdown and DOCX need nothing extra.
+For PDFs, install the text-layer backend once:
 
 ```sh
-cd workers/python
-python -m rdw_worker < requests.jsonl   # speaks the rdw-ipc protocol on stdio
+python -m pip install pypdf
 ```
+
+Optional environment variables: `RDW_PYTHON` (interpreter, default `python` /
+`python3`), `RDW_WORKER_DIR` (folder containing `rdw_worker`), `RDW_DATA_DIR`
+(use a different data folder, e.g. a throwaway profile for testing).
 
 ## Repository layout
 

@@ -31,6 +31,8 @@ impl Workspace {
             url: rec.doi.as_ref().map(|d| format!("https://doi.org/{d}")),
             pages: 0,
             abstract_text: String::new(),
+            file_path: None,
+            text_path: None,
         });
         self.dirty = true;
         Ok(id)

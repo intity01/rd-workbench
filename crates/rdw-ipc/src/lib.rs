@@ -10,5 +10,7 @@
 
 pub mod codec;
 mod messages;
+pub mod supervisor;
 
 pub use messages::{ExtractMode, PROTOCOL_VERSION, Request, Response};
+pub use supervisor::{Event, Supervisor, WorkerSpec};

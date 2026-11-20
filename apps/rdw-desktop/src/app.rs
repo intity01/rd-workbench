@@ -1,6 +1,6 @@
 use crate::screen::Screen;
 use crate::screens::{self, ScreenStates};
-use crate::{background, storage, theme};
+use crate::{background, extraction, storage, theme};
 use eframe::egui::{self, RichText};
 use rdw_core::Workspace;
 use rdw_core::store::SqliteStore;
@@ -15,6 +15,7 @@ pub struct WorkbenchApp {
     pub status: Option<String>,
     pub states: ScreenStates,
     pub jobs: background::Jobs,
+    pub extraction: extraction::Extraction,
 }
 
 impl WorkbenchApp {
@@ -33,6 +34,7 @@ impl WorkbenchApp {
             status,
             states,
             jobs: background::Jobs::default(),
+            extraction: extraction::Extraction::default(),
         }
     }
 
@@ -105,7 +107,7 @@ impl WorkbenchApp {
 impl eframe::App for WorkbenchApp {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
         self.shortcuts(ui.ctx());
-        screens::poll_background(self);
+        screens::poll_background(self, ui.ctx());
         egui::Panel::top("top").show(ui, |ui| {
             ui.add_space(6.0);
             self.top_bar(ui);
