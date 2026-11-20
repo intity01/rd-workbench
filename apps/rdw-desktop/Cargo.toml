@@ -1,0 +1,20 @@
+[package]
+name = "rdw-desktop"
+description = "Native desktop shell for R&D Workbench (egui, no webview)."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "rdw"
+path = "src/main.rs"
+
+[dependencies]
+rdw-core.workspace = true
+eframe.workspace = true
+open.workspace = true
+
+[lints]
+workspace = true

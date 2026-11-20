@@ -1,0 +1,15 @@
+[package]
+name = "rdw-graph"
+description = "In-memory knowledge graph / reasoning DAG with fast traversal and undo history."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+rdw-model.workspace = true
+thiserror.workspace = true
+
+[lints]
+workspace = true

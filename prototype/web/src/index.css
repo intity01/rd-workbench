@@ -1,0 +1,191 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap');
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Design tokens. Surfaces are solid and separated by tone, not outlines.
+ * --signal is the single accent and is always used as a fill with --on-signal text.
+ * --signal-ink is the readable text/line version of the accent for each theme.
+ */
+:root {
+  --bg: #f3f3f1;
+  --surface: #ffffff;
+  --surface2: #f6f6f4;
+  --raised: #ececea;
+  --hover: #e6e6e3;
+  --selected: #ffffff;
+  --card: #ffffff;
+  --border: #e3e3e0;
+  --text: #141416;
+  --text2: #6b6b72;
+  --signal: #d4f07a;
+  --on-signal: #151a05;
+  --signal-ink: #4a6200;
+  --success: #1f9d63;
+  --warning: #c98a12;
+  --danger: #e5484d;
+  --canvas: #f0f0ee;
+  --dot: #d6d6d2;
+  --edge: #b9b9b4;
+  --shadow: 0 12px 32px rgba(20, 20, 22, 0.12);
+  color-scheme: light;
+}
+.dark {
+  --bg: #0a0a0b;
+  --surface: #121214;
+  --surface2: #18181b;
+  --raised: #222226;
+  --hover: #2a2a2f;
+  --selected: #34343a;
+  --card: #1d1d21;
+  --border: #232327;
+  --text: #ededef;
+  --text2: #8d8d95;
+  --signal: #d4f07a;
+  --on-signal: #151a05;
+  --signal-ink: #d4f07a;
+  --success: #46c88a;
+  --warning: #f0b84a;
+  --danger: #e5484d;
+  --canvas: #0e0e10;
+  --dot: #222226;
+  --edge: #4a4a51;
+  --shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-app: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface2);
+  --color-raised: var(--raised);
+  --color-hover: var(--hover);
+  --color-selected: var(--selected);
+  --color-card: var(--card);
+  --color-line: var(--border);
+  --color-fg: var(--text);
+  --color-muted: var(--text2);
+  --color-signal: var(--signal);
+  --color-on-signal: var(--on-signal);
+  --color-signal-ink: var(--signal-ink);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-canvas: var(--canvas);
+  --font-sans: 'Inter', 'Noto Sans Thai', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --shadow-pop: var(--shadow);
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+  :lang(th),
+  [lang='th'] {
+    line-height: 1.7;
+  }
+  :focus-visible {
+    outline: 2px solid var(--signal-ink);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--signal);
+    color: var(--on-signal);
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--raised) transparent;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
+/* Solid tooltip, shown on hover and keyboard focus. */
+[data-tip] {
+  position: relative;
+}
+[data-tip]:hover::after,
+[data-tip]:focus-visible::after {
+  content: attr(data-tip);
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: var(--text);
+  color: var(--bg);
+  pointer-events: none;
+  z-index: 80;
+}
+[data-tip-side='right']:hover::after,
+[data-tip-side='right']:focus-visible::after {
+  top: 50%;
+  left: calc(100% + 8px);
+  transform: translateY(-50%);
+}
+
+/* Reader marks: solid fills, never outlines. */
+mark.hl {
+  background: var(--signal);
+  color: var(--on-signal);
+  border-radius: 3px;
+  padding: 0 2px;
+}
+mark.find {
+  background: var(--text);
+  color: var(--bg);
+  border-radius: 3px;
+  padding: 0 2px;
+}
+mark.q {
+  background: transparent;
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--signal-ink);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+@keyframes flash {
+  0%,
+  60% {
+    background: var(--signal);
+    color: var(--on-signal);
+  }
+}
+.flash {
+  animation: flash 1.6s ease-out;
+}
+@keyframes shimmer {
+  50% {
+    opacity: 0.55;
+  }
+}
+.skeleton {
+  background: var(--raised);
+  border-radius: 12px;
+  animation: shimmer 1.2s infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .flash,
+  .skeleton {
+    animation: none;
+  }
+}

@@ -1,0 +1,71 @@
+// Fictional sample data for the R&D Workbench prototype. No real citations, DOIs, or benchmarks.
+import type { Project } from './types'
+
+const baseProject = {
+  hypotheses: '',
+  exclusions: '',
+  storage: '~/Workbench/projects',
+  language: 'Mixed' as const,
+  provider: 'Local Models',
+  mode: 'Local-first' as const,
+  citationSources: ['OpenAlex', 'Crossref'],
+  processing: ['OCR when needed', 'Equation processing'],
+}
+
+export const PROJECTS: Project[] = [
+  {
+    ...baseProject,
+    id: 'P-001',
+    name: 'Personal AI Research Workstation',
+    description:
+      'Architecture study for a local-first research desktop: native UI, document workers, and an evidence graph.',
+    category: 'AI / Systems',
+    status: 'Active',
+    sourceCount: 32,
+    progress: 68,
+    updated: '2025-06-12',
+    question:
+      'How can a native desktop workstation process research documents locally while staying responsive?',
+    objectives: 'Compare UI toolkits; define the worker boundary; evaluate local extraction quality.',
+    hypotheses: 'Process isolation between the core and document workers improves perceived responsiveness.',
+    scope: 'Single-user desktop, local documents, optional cloud models.',
+    exclusions: 'Team collaboration, billing, mobile clients.',
+    output: 'Architecture decision record and prototype.',
+    tags: ['rust', 'local-ai', 'architecture'],
+    icon: 'cpu',
+  },
+  {
+    ...baseProject,
+    id: 'P-002',
+    name: 'AI Audio Analysis & Alignment',
+    description: 'Exploring speech–text alignment pipelines for long-form Thai and English recordings.',
+    category: 'Audio Processing',
+    status: 'Planning',
+    sourceCount: 18,
+    progress: 32,
+    updated: '2025-06-09',
+    question: 'Which alignment approach is robust for mixed Thai–English speech?',
+    objectives: 'Survey alignment methods; define evaluation metrics.',
+    scope: 'Offline processing of recorded audio.',
+    output: 'Method comparison note.',
+    tags: ['audio', 'alignment', 'thai'],
+    icon: 'audio',
+  },
+  {
+    ...baseProject,
+    id: 'P-003',
+    name: 'Native Browser Architecture',
+    description: 'Notes on process models, compositing, and sandboxing in native browser engines.',
+    category: 'Software Engineering',
+    status: 'Active',
+    sourceCount: 24,
+    progress: 51,
+    updated: '2025-06-11',
+    question: 'What process model balances isolation and memory overhead for a small browser engine?',
+    objectives: 'Map process boundaries; document compositor design.',
+    scope: 'Desktop engines only.',
+    output: 'Design notes and diagrams.',
+    tags: ['browser', 'compositor', 'sandbox'],
+    icon: 'globe',
+  },
+]

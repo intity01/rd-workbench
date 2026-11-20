@@ -1,0 +1,18 @@
+[package]
+name = "rdw-core"
+description = "Orchestrator: workspace state, services and persistence for R&D Workbench."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+rdw-model.workspace = true
+rdw-graph.workspace = true
+rdw-providers.workspace = true
+rdw-ipc.workspace = true
+thiserror.workspace = true
+
+[lints]
+workspace = true

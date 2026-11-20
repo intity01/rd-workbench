@@ -1,0 +1,10 @@
+{
+  "description": "A personal research and development workspace for organizing sources, analyzing documents, managing citations, and connecting evidence in interactive knowledge maps.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

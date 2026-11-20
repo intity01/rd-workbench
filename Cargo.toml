@@ -1,0 +1,43 @@
+[workspace]
+resolver = "3"
+members = ["crates/*", "apps/*", "tools/xtask"]
+default-members = ["apps/rdw-desktop"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/intity01/rd-workbench"
+authors = ["R&D Workbench contributors"]
+
+[workspace.dependencies]
+# Internal crates
+rdw-model = { path = "crates/rdw-model" }
+rdw-graph = { path = "crates/rdw-graph" }
+rdw-providers = { path = "crates/rdw-providers" }
+rdw-ipc = { path = "crates/rdw-ipc" }
+rdw-core = { path = "crates/rdw-core" }
+
+# External
+eframe = "0.37"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+open = "5"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+missing_debug_implementations = "warn"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = true
+
+[profile.dev.package."*"]
+# Optimise dependencies (egui, renderers) even in debug builds so the UI stays smooth.
+opt-level = 2
