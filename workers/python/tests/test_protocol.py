@@ -22,14 +22,26 @@ def test_worker_handshake_and_text_extract(tmp_path):
     src.write_text("# สวัสดี\n", encoding="utf-8")
     lines = [
         {"type": "hello", "protocol": p.PROTOCOL_VERSION},
-        {"type": "extract", "task_id": "T1", "path": str(src), "mode": "fast"},
+        {
+            "type": "extract",
+            "task_id": "T1",
+            "path": str(src),
+            "out_path": str(tmp_path / "out" / "T1.md"),
+            "mode": "fast",
+        },
         {"type": "shutdown"},
     ]
     stdin = "".join(json.dumps(m) + "\n" for m in lines)
     out = subprocess.run(
-        [sys.executable, "-m", "rdw_worker"], input=stdin, capture_output=True, text=True,
-        encoding="utf-8", cwd=ROOT, check=True,
+        [sys.executable, "-m", "rdw_worker"],
+        input=stdin,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        cwd=ROOT,
+        check=True,
     )
     msgs = [json.loads(line) for line in out.stdout.splitlines() if line.strip()]
     assert msgs[0]["type"] == "ready"
     assert msgs[-1]["type"] == "done" and msgs[-1]["task_id"] == "T1"
+    assert (tmp_path / "out" / "T1.md").read_text(encoding="utf-8") == "# สวัสดี\n"

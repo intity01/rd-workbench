@@ -1,5 +1,5 @@
 use rdw_graph::{Graph, GraphError, History};
-use rdw_model::{Edge, EdgeId, GNode, NodeId, Project, ProjectId, Source, Task};
+use rdw_model::{Edge, EdgeId, GNode, NodeId, Project, ProjectId, Source, SourceId, Task};
 
 const HISTORY_LIMIT: usize = 50;
 
@@ -25,6 +25,7 @@ pub struct Workspace {
     /// Set by every mutation; cleared by [`Workspace::save`].
     pub(crate) dirty: bool,
     pub(crate) deleted_projects: Vec<ProjectId>,
+    pub(crate) deleted_sources: Vec<SourceId>,
 }
 
 impl Default for Workspace {
@@ -44,6 +45,7 @@ impl Workspace {
             next_id: 1,
             dirty: false,
             deleted_projects: Vec::new(),
+            deleted_sources: Vec::new(),
         }
     }
 

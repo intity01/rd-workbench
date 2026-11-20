@@ -12,6 +12,8 @@ name = "rdw"
 path = "src/main.rs"
 
 [dependencies]
+# Native file dialogs (Win32 / AppKit / xdg-portal); no webview.
+rfd = "0.18"
 rdw-core.workspace = true
 eframe.workspace = true
 open.workspace = true

@@ -2,6 +2,7 @@
 //! Screens not yet ported render a pointer to their prototype reference.
 
 mod home;
+mod imports;
 mod library;
 mod map;
 mod projects;
@@ -26,6 +27,7 @@ pub struct ScreenStates {
     pub settings: settings::State,
     pub assistant: research::assistant::State,
     pub verify: verify::State,
+    pub imports: imports::State,
 }
 
 impl ScreenStates {
@@ -35,7 +37,10 @@ impl ScreenStates {
 }
 
 /// Drains results from background work (network calls) into app state.
-pub fn poll_background(app: &mut WorkbenchApp) {
+pub fn poll_background(app: &mut WorkbenchApp, ctx: &egui::Context) {
+    imports::handle_drops(app, ctx);
+    app.extraction.poll(&mut app.ws);
+    app.extraction.pump(&app.ws, ctx);
     for outcome in app.jobs.drain() {
         match outcome {
             Outcome::Chat(result) => research::assistant::receive(app, result),
@@ -61,6 +66,7 @@ pub fn show(app: &mut WorkbenchApp, ui: &mut egui::Ui) {
         Screen::Map => map::show(app, ui),
         Screen::Tasks => tasks::show(app, ui),
         Screen::Verify => verify::show(app, ui),
+        Screen::Imports => imports::show(app, ui),
         Screen::Settings => settings::show(app, ui),
         other => not_ported(ui, other),
     }

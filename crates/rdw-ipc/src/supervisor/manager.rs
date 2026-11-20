@@ -24,6 +24,7 @@ pub(crate) enum Input {
 struct Task {
     id: String,
     path: String,
+    out_path: String,
     mode: ExtractMode,
 }
 
@@ -71,12 +72,11 @@ pub(crate) fn run(
         let wait = m.next_deadline().map_or(IDLE_WAIT, |d| d.saturating_duration_since(Instant::now()));
         match rx.recv_timeout(wait) {
             Ok(Input::Cmd(Command::Shutdown)) | Err(RecvTimeoutError::Disconnected) => break,
-            Ok(Input::Cmd(Command::Extract { task_id, path, mode })) if m.gave_up => {
-                let _ = (path, mode);
+            Ok(Input::Cmd(Command::Extract { task_id, .. })) if m.gave_up => {
                 m.fail(task_id, "worker unavailable");
             }
-            Ok(Input::Cmd(Command::Extract { task_id, path, mode })) => {
-                m.queue.push_back(Task { id: task_id, path, mode });
+            Ok(Input::Cmd(Command::Extract { task_id, path, out_path, mode })) => {
+                m.queue.push_back(Task { id: task_id, path, out_path, mode });
             }
             Ok(Input::Cmd(Command::Cancel(id))) => m.cancel(&id),
             Ok(Input::Line(g, msg)) if g == m.generation => m.on_response(msg),
@@ -125,7 +125,12 @@ impl Manager {
             return;
         }
         let Some(task) = self.queue.pop_front() else { return };
-        let req = Request::Extract { task_id: task.id.clone(), path: task.path.clone(), mode: task.mode };
+        let req = Request::Extract {
+            task_id: task.id.clone(),
+            path: task.path.clone(),
+            out_path: task.out_path.clone(),
+            mode: task.mode,
+        };
         let sent = self.worker.as_mut().map(|w| w.send(&req));
         self.current = Some((task, Instant::now()));
         if !matches!(sent, Some(Ok(()))) {

@@ -43,10 +43,10 @@ fn handshake_then_tasks_complete_in_order() {
     let sup = Supervisor::start(fake("normal"), || {});
     let Event::Ready { worker, capabilities } = until(&sup, is_ready) else { unreachable!() };
     assert_eq!((worker.as_str(), capabilities), ("fake", vec!["text".to_owned()]));
-    sup.extract("A", "a.txt", ExtractMode::Fast);
-    sup.extract("B", "b.txt", ExtractMode::Fast);
+    sup.extract("A", "a.txt", "a.md", ExtractMode::Fast);
+    sup.extract("B", "b.txt", "b.md", ExtractMode::Fast);
     let first = until(&sup, |e| matches!(e, Event::Done { .. }));
-    assert_eq!(first, Event::Done { task_id: "A".into(), markdown_path: "a.txt.md".into(), pages: 1 });
+    assert_eq!(first, Event::Done { task_id: "A".into(), markdown_path: "a.md".into(), pages: 1 });
     until(&sup, done("B"));
 }
 
@@ -56,8 +56,8 @@ fn crash_fails_running_task_then_restarts_for_the_next() {
     let _ = std::fs::remove_file(&marker);
     let spec = fake("crash-once").env("RDW_FAKE_MARKER", marker.to_string_lossy());
     let sup = Supervisor::start(spec, || {});
-    sup.extract("A", "a.txt", ExtractMode::Fast);
-    sup.extract("B", "b.txt", ExtractMode::Fast);
+    sup.extract("A", "a.txt", "a.md", ExtractMode::Fast);
+    sup.extract("B", "b.txt", "b.md", ExtractMode::Fast);
     until(&sup, failed_with("A", "worker crashed"));
     until(&sup, |e| matches!(e, Event::Exited { restarting: true, .. }));
     until(&sup, done("B"));
@@ -69,7 +69,7 @@ fn silent_task_times_out() {
     let mut spec = fake("hang");
     spec.idle_timeout = Duration::from_millis(300);
     let sup = Supervisor::start(spec, || {});
-    sup.extract("A", "a.txt", ExtractMode::Fast);
+    sup.extract("A", "a.txt", "a.md", ExtractMode::Fast);
     until(&sup, failed_with("A", "timed out"));
     until(&sup, is_ready); // restarted and usable again
 }
@@ -78,8 +78,8 @@ fn silent_task_times_out() {
 fn cancel_running_and_queued_tasks() {
     let sup = Supervisor::start(fake("hang"), || {});
     until(&sup, is_ready);
-    sup.extract("A", "a.txt", ExtractMode::Fast);
-    sup.extract("B", "b.txt", ExtractMode::Fast);
+    sup.extract("A", "a.txt", "a.md", ExtractMode::Fast);
+    sup.extract("B", "b.txt", "b.md", ExtractMode::Fast);
     sup.cancel("B");
     until(&sup, failed_with("B", "cancelled"));
     sup.cancel("A");
@@ -92,7 +92,7 @@ fn protocol_mismatch_gives_up_and_rejects_new_work() {
     let sup = Supervisor::start(fake("bad-protocol"), || {});
     let e = until(&sup, |e| matches!(e, Event::Exited { .. }));
     assert!(matches!(e, Event::Exited { ref reason, restarting: false } if reason.contains("protocol")));
-    sup.extract("A", "a.txt", ExtractMode::Fast);
+    sup.extract("A", "a.txt", "a.md", ExtractMode::Fast);
     until(&sup, failed_with("A", "unavailable"));
 }
 
@@ -140,7 +140,8 @@ fn real_python_worker_extracts_text() {
     let spec = WorkerSpec::new(py).arg("-m").arg("rdw_worker").env("PYTHONPATH", workers.to_string_lossy());
     let sup = Supervisor::start(spec, || {});
     until(&sup, is_ready);
-    sup.extract("P", doc.to_string_lossy(), ExtractMode::Fast);
+    let out = doc.with_extension("out.md");
+    sup.extract("P", doc.to_string_lossy(), out.to_string_lossy(), ExtractMode::Fast);
     let Event::Done { markdown_path, .. } = until(&sup, done("P")) else { unreachable!() };
     assert_eq!(std::fs::read_to_string(&markdown_path).unwrap(), "# ทดสอบ\n\nhello");
     let _ = std::fs::remove_file(&doc);

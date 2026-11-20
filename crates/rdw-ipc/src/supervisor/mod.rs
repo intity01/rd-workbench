@@ -99,7 +99,7 @@ pub enum Event {
 
 #[derive(Debug)]
 pub(crate) enum Command {
-    Extract { task_id: String, path: String, mode: ExtractMode },
+    Extract { task_id: String, path: String, out_path: String, mode: ExtractMode },
     Cancel(String),
     Shutdown,
 }
@@ -131,9 +131,16 @@ impl Supervisor {
         Self { tx, events, thread: Some(thread) }
     }
 
-    /// Queues a document for extraction.
-    pub fn extract(&self, task_id: impl Into<String>, path: impl Into<String>, mode: ExtractMode) {
-        self.command(Command::Extract { task_id: task_id.into(), path: path.into(), mode });
+    /// Queues a document for extraction to Markdown at `out_path`.
+    pub fn extract(
+        &self,
+        task_id: impl Into<String>,
+        path: impl Into<String>,
+        out_path: impl Into<String>,
+        mode: ExtractMode,
+    ) {
+        let (task_id, path, out_path) = (task_id.into(), path.into(), out_path.into());
+        self.command(Command::Extract { task_id, path, out_path, mode });
     }
 
     /// Cancels a queued or running task; a `Failed` event confirms it.

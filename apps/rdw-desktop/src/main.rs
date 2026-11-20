@@ -6,12 +6,14 @@
 
 mod app;
 mod background;
+mod extraction;
 mod fonts;
 mod screen;
 mod screens;
 mod secrets;
 mod storage;
 mod theme;
+mod worker;
 
 fn main() -> eframe::Result {
     let options = eframe::NativeOptions {

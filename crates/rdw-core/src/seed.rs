@@ -77,6 +77,8 @@ pub(crate) fn build() -> Workspace {
         url: None,
         pages: 12,
         abstract_text: "Fictional abstract used for UI development.".into(),
+        file_path: None,
+        text_path: None,
     }];
 
     let nodes = vec![

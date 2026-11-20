@@ -11,7 +11,7 @@ import sys
 from collections.abc import Iterator
 from typing import Any, TextIO
 
-PROTOCOL_VERSION = 1
+PROTOCOL_VERSION = 2
 
 EXTRACT_MODES = ("fast", "balanced", "accurate")
 

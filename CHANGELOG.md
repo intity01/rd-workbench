@@ -6,8 +6,14 @@ All notable changes are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- Worker protocol v2: `extract` carries `out_path`; the core decides where extracted text is written.
+
 ### Added
 
+- Imports screen: pick or drop PDF / DOCX / Markdown / text files, queue with progress, cancel, retry, remove, open extracted text.
+- Worker extraction: DOCX via the standard library, PDF text layer via optional `pypdf`, Markdown written to the app's data folder.
 - Phase 2: `rdw_ipc::Supervisor` runs a worker process with handshake, one-at-a-time queue, crash restart with backoff, cancel and idle timeouts.
 - Phase 1: `rdw-store` crate with `SqliteStore` (WAL, JSON documents, migrations) and autosave.
 - Projects create / edit / delete with cascade; Knowledge map pan, zoom, drag, connect, orthogonal edges.

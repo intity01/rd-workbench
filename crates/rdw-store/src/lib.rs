@@ -13,7 +13,7 @@ mod sqlite;
 pub use memory::MemoryStore;
 pub use sqlite::SqliteStore;
 
-use rdw_model::{Edge, GNode, Project, ProjectId, Source};
+use rdw_model::{Edge, GNode, Project, ProjectId, Source, SourceId};
 
 #[derive(Debug, thiserror::Error)]
 pub enum StoreError {
@@ -36,6 +36,7 @@ pub trait Store {
 
     fn load_sources(&self) -> Result<Vec<Source>>;
     fn save_source(&mut self, source: &Source) -> Result<()>;
+    fn delete_source(&mut self, id: &SourceId) -> Result<()>;
 
     /// Replaces the stored topology of one project.
     fn save_graph(&mut self, project: &ProjectId, nodes: &[GNode], edges: &[Edge]) -> Result<()>;

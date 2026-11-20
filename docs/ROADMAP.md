@@ -26,8 +26,10 @@ Track work as GitHub issues labelled `phase-1` … `phase-5`.
 ## Phase 2 — Documents and Thai
 
 - [x] Spawn and supervise the Python worker (restart on crash, cancel, timeouts)
-- [ ] Imports screen + queue; deep-research report import (Markdown / PDF / DOCX)
-- [ ] Extraction tiers (`fast` / `balanced` / `accurate`) with a PDF backend
+- [x] Imports screen + queue (file picker, drop on window, cancel, retry); reports import as `ResearchReport` sources
+- [ ] Pull references out of imported reports into Verify
+- [x] `fast` tier: PDF text layer (pypdf, page markers), DOCX (standard library)
+- [ ] `balanced` / `accurate` tiers (OCR, vision model) for scans, equations, tables
 - [ ] Tantivy index; Thai word segmentation for indexing
 - [ ] Thai line breaking and shaping in the UI (ICU4X segmenter + cosmic-text)
 - [ ] Named pipes (Windows) / Unix domain sockets transport behind `rdw-ipc::codec`

@@ -1,11 +1,11 @@
-"""Extraction backends.
+"""Extraction dispatch: pick a backend by file type and mode, write Markdown.
 
 Adaptive tiers (see docs/ARCHITECTURE.md):
 
-* plain text / Markdown / source code -> handled here directly (and later in Rust)
-* ``fast``      -> PDF text layer on CPU (e.g. Marker without OCR)
-* ``balanced``  -> layout + OCR where needed
-* ``accurate``  -> GPU vision model for equations, tables and scans
+* plain text / Markdown / source code -> copied as-is (UTF-8, LF)
+* DOCX                                -> standard library only (``docx.py``)
+* PDF, ``fast``                       -> text layer via the optional ``pypdf``
+* PDF, ``balanced`` / ``accurate``    -> OCR / vision backends, not yet available
 
 Heavy libraries are optional imports so the worker starts without them.
 """
@@ -22,30 +22,40 @@ TEXT_SUFFIXES = {".txt", ".md", ".markdown", ".rst", ".py", ".rs", ".ts", ".tsx"
 
 
 def available_backends() -> list[str]:
-    caps = ["text"]
+    caps = ["text", "docx"]
+    if importlib.util.find_spec("pypdf") is not None:
+        caps.append("pdf")
     if importlib.util.find_spec("marker") is not None:
         caps.append("marker")
     return caps
 
 
-def _out_path(src: Path) -> Path:
-    return src.with_suffix(src.suffix + ".rdw.md")
+def _convert(src: Path, mode: str, progress: Progress) -> tuple[str, int]:
+    suffix = src.suffix.lower()
+    if suffix in TEXT_SUFFIXES:
+        return src.read_text(encoding="utf-8", errors="replace"), 1
+    if suffix == ".docx":
+        from .docx import docx_to_markdown
+
+        return docx_to_markdown(src, progress)
+    if suffix == ".pdf":
+        if mode != "fast":
+            raise NotImplementedError(f"'{mode}' PDF extraction (OCR) is not available yet; use 'fast'")
+        from .pdf import pdf_to_markdown
+
+        return pdf_to_markdown(src, progress)
+    raise ValueError(f"unsupported file type: {suffix or '(none)'}")
 
 
-def extract(path: str, mode: str, progress: Progress) -> tuple[str, int]:
+def extract(path: str, out_path: str, mode: str, progress: Progress) -> tuple[str, int]:
+    """Converts ``path`` to Markdown at ``out_path``; returns (out_path, pages)."""
     src = Path(path)
     if not src.is_file():
         raise FileNotFoundError(path)
-    progress(5, f"starting ({mode})")
-
-    if src.suffix.lower() in TEXT_SUFFIXES:
-        text = src.read_text(encoding="utf-8", errors="replace")
-        out = _out_path(src)
-        out.write_text(text, encoding="utf-8", newline="\n")  # LF on every OS
-        progress(100, "copied text")
-        return str(out), 1
-
-    if src.suffix.lower() == ".pdf":
-        raise NotImplementedError("PDF backend lands in Phase 2 (install the 'marker' extra)")
-
-    raise ValueError(f"unsupported file type: {src.suffix}")
+    progress(5, f"reading {src.name} ({mode})")
+    text, pages = _convert(src, mode, progress)
+    out = Path(out_path)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(text, encoding="utf-8", newline="\n")  # LF on every OS
+    progress(100, "done")
+    return str(out), pages

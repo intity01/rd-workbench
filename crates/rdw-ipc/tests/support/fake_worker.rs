@@ -22,7 +22,7 @@ fn main() {
                 worker: "fake".into(),
                 capabilities: vec!["text".into()],
             },
-            Request::Extract { task_id, path, .. } => {
+            Request::Extract { task_id, out_path, .. } => {
                 match mode.as_str() {
                     "crash" => std::process::exit(3),
                     "crash-once" => {
@@ -42,7 +42,7 @@ fn main() {
                 if send(&mut out, &progress).is_err() {
                     return;
                 }
-                Response::Done { task_id, markdown_path: format!("{path}.md"), pages: 1 }
+                Response::Done { task_id, markdown_path: out_path, pages: 1 }
             }
             Request::Cancel { .. } => continue,
             Request::Shutdown => return,
