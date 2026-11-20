@@ -13,8 +13,8 @@ Heavy libraries are optional imports so the worker starts without them.
 from __future__ import annotations
 
 import importlib.util
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable
 
 Progress = Callable[[int, str], None]
 

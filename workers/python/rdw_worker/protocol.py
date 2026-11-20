@@ -8,7 +8,8 @@ from __future__ import annotations
 
 import json
 import sys
-from typing import Any, Iterator, TextIO
+from collections.abc import Iterator
+from typing import Any, TextIO
 
 PROTOCOL_VERSION = 1
 

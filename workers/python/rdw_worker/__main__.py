@@ -29,10 +29,12 @@ def main() -> int:
             task_id = msg["task_id"]
             try:
                 out_path, pages = extract(
-                    msg["path"], msg.get("mode", "fast"), lambda pct, m: p.send(p.progress(task_id, pct, m))
+                    msg["path"],
+                    msg.get("mode", "fast"),
+                    lambda pct, m, tid=task_id: p.send(p.progress(tid, pct, m)),
                 )
                 p.send(p.done(task_id, out_path, pages))
-            except Exception as exc:  # report, never crash the worker
+            except Exception as exc:  # noqa: BLE001 — report every failure, never crash the worker
                 p.send(p.failed(task_id, f"{type(exc).__name__}: {exc}"))
         elif kind == "cancel":
             p.send(p.log("warn", "cancel is not implemented yet"))
