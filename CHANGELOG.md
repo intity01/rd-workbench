@@ -8,6 +8,7 @@ All notable changes are documented here. The format follows
 
 ### Added
 
+- Phase 2: `rdw_ipc::Supervisor` runs a worker process with handshake, one-at-a-time queue, crash restart with backoff, cancel and idle timeouts.
 - Phase 1: `rdw-store` crate with `SqliteStore` (WAL, JSON documents, migrations) and autosave.
 - Projects create / edit / delete with cascade; Knowledge map pan, zoom, drag, connect, orthogonal edges.
 - Settings screen: API keys in the OS credential store, per-tier model routing.

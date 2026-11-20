@@ -41,7 +41,7 @@ def extract(path: str, mode: str, progress: Progress) -> tuple[str, int]:
     if src.suffix.lower() in TEXT_SUFFIXES:
         text = src.read_text(encoding="utf-8", errors="replace")
         out = _out_path(src)
-        out.write_text(text, encoding="utf-8")
+        out.write_text(text, encoding="utf-8", newline="\n")  # LF on every OS
         progress(100, "copied text")
         return str(out), 1
 

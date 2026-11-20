@@ -25,7 +25,7 @@ Track work as GitHub issues labelled `phase-1` … `phase-5`.
 
 ## Phase 2 — Documents and Thai
 
-- [ ] Spawn and supervise the Python worker (restart on crash, cancel, timeouts)
+- [x] Spawn and supervise the Python worker (restart on crash, cancel, timeouts)
 - [ ] Imports screen + queue; deep-research report import (Markdown / PDF / DOCX)
 - [ ] Extraction tiers (`fast` / `balanced` / `accurate`) with a PDF backend
 - [ ] Tantivy index; Thai word segmentation for indexing

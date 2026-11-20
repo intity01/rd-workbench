@@ -14,3 +14,10 @@ thiserror.workspace = true
 
 [lints]
 workspace = true
+
+# Scriptable stand-in worker used by tests/supervisor.rs (never shipped).
+[[bin]]
+name = "rdw-fake-worker"
+path = "tests/support/fake_worker.rs"
+test = false
+doc = false
