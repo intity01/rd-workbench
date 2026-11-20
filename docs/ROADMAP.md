@@ -31,6 +31,7 @@ Track work as GitHub issues labelled `phase-1` … `phase-5`.
 - [ ] Tantivy index; Thai word segmentation for indexing
 - [ ] Thai line breaking and shaping in the UI (ICU4X segmenter + cosmic-text)
 - [ ] Named pipes (Windows) / Unix domain sockets transport behind `rdw-ipc::codec`
+- [ ] Port Imports, Reader and Help, then delete `prototype/web` (see `docs/MIGRATION.md`)
 
 ## Phase 3 — Writing studio
 
@@ -52,4 +53,4 @@ Track work as GitHub issues labelled `phase-1` … `phase-5`.
 
 ## Non-goals
 
-Multi-user accounts, SSO, billing, cloud sync, mobile clients, and any automation of vendors' web apps.
+Web UI of any kind, multi-user accounts, SSO, billing, cloud sync, mobile clients, and any automation of vendors' web apps.

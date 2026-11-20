@@ -43,3 +43,10 @@ inside `prototype/web`.
 4. Reuse `card` / `title` / theme tokens; add a widget to a shared module when used twice.
 5. `cargo xtask check-size && cargo clippy --workspace --all-targets -- -D warnings`.
 6. Update the table above.
+
+## Retiring the prototype
+
+R&D Workbench is a personal, desktop-only program; nothing web-based ships or stays long-term.
+Once **Imports**, **Reader** and **Help** are ported, delete `prototype/web` in one commit and
+remove the "Prototype" column above along with the `prototype_path()` pointers in
+`apps/rdw-desktop/src/screen.rs`.
