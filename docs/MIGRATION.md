@@ -25,14 +25,14 @@ inside `prototype/web`.
 | Screen | Prototype | Native |
 | ------ | --------- | ------ |
 | Home | `features/home` | first cut |
-| Projects | `features/projects` | list + detail (no editing) |
-| Research | `features/research` | handoff only; reader / assistant panes to do |
+| Projects | `features/projects` | list, create, edit, delete |
+| Research | `features/research` | assistant + handoff; reader pane to do |
 | Imports | `features/imports` | to do |
-| Verify | `features/verify` | to do |
+| Verify | `features/verify` | DOI lookup and title check |
 | Library | `features/library` | search (naive) |
-| Knowledge map | `features/map` | static layout, select, delete, undo |
+| Knowledge map | `features/map` | pan, zoom, drag, connect, edit, undo |
 | Tasks | `features/tasks` | empty state |
-| Settings | `features/settings` | to do |
+| Settings | `features/settings` | API keys + routing |
 | Help | `features/help` | to do |
 
 ## Porting checklist (per screen)

@@ -5,9 +5,12 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod app;
+mod background;
 mod fonts;
 mod screen;
 mod screens;
+mod secrets;
+mod storage;
 mod theme;
 
 fn main() -> eframe::Result {

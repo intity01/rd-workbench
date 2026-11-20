@@ -25,6 +25,24 @@ pub enum Rel {
     LeadsTo,
 }
 
+impl NodeType {
+    pub const ALL: [NodeType; 8] = [
+        Self::Claim,
+        Self::Evidence,
+        Self::Counter,
+        Self::Question,
+        Self::Decision,
+        Self::Topic,
+        Self::Concept,
+        Self::Document,
+    ];
+}
+
+impl Rel {
+    pub const ALL: [Rel; 5] =
+        [Self::Supports, Self::Contradicts, Self::DependsOn, Self::Refines, Self::LeadsTo];
+}
+
 /// A node on the knowledge map.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct GNode {

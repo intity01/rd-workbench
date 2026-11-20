@@ -14,13 +14,14 @@ Track work as GitHub issues labelled `phase-1` … `phase-5`.
 
 ## Phase 1 — Usable core
 
-- [ ] `SqliteStore` (WAL): projects, sources, notes, graph snapshots; autosave
-- [ ] Projects: create / edit / delete (port `features/projects`)
-- [ ] OS credential store for API keys; Settings → Providers screen
-- [ ] `LlmClient` for OpenAI, Anthropic, Google and OpenAI-compatible local endpoints
-- [ ] Assistant pane wired to `Router` (cheap tier by default)
-- [ ] OpenAlex DOI lookup + persistent cache + per-source `TokenBucket`; Crossref fallback
-- [ ] Knowledge map: pan / zoom, drag nodes, connect, orthogonal edges
+- [x] `SqliteStore` (WAL): projects, sources, graph snapshots, key-value cache; autosave
+- [ ] Persist notes and tasks (still in memory only)
+- [x] Projects: create / edit / delete (port `features/projects`)
+- [x] OS credential store for API keys; Settings → Providers screen
+- [x] `LlmClient` for OpenAI, Anthropic, Google and OpenAI-compatible local endpoints
+- [x] Assistant pane wired to `Router` (Standard tier; Bulk is the fallback)
+- [x] OpenAlex DOI lookup + persistent cache + per-source `TokenBucket`; Crossref fallback
+- [x] Knowledge map: pan / zoom, drag nodes, connect, orthogonal edges
 
 ## Phase 2 — Documents and Thai
 

@@ -10,6 +10,8 @@ pub const SURFACE: Color32 = Color32::from_rgb(0x1A, 0x1A, 0x1D);
 pub const RAISED: Color32 = Color32::from_rgb(0x26, 0x26, 0x2B);
 pub const MUTED: Color32 = Color32::from_rgb(0x9A, 0x9A, 0xA3);
 pub const CONTRADICTS: Color32 = Color32::from_rgb(0xE5, 0x48, 0x4D);
+pub const DANGER: Color32 = CONTRADICTS;
+pub const WARN: Color32 = Color32::from_rgb(0xF0, 0xB4, 0x4C);
 
 pub fn apply(ctx: &egui::Context) {
     let mut v = Visuals::dark();
