@@ -26,7 +26,7 @@ that do the heavy or domain-specific work.
 1. **No webview, ever.** UI is egui on wgpu/glow. Rich output (equations, PDF) is rendered natively
    (Typst, a Rust PDF renderer) — never through an embedded browser. Opening a URL launches the
    user's *system* browser as a separate application.
-2. **One-way dependencies.** `rdw-model` → `rdw-graph` → `rdw-providers` / `rdw-ipc` → `rdw-core` →
+2. **One-way dependencies.** `rdw-model` → `rdw-graph` → `rdw-providers` / `rdw-ipc` → `rdw-store` → `rdw-core` →
    `rdw-desktop`. Lower crates never import higher ones; `rdw-model` has no I/O.
 3. **The core owns state.** Screens read `&Workspace` and call intent methods (`add_node`,
    `delete_node`, `undo`). No screen mutates entities directly. This is what makes the UI layer
@@ -45,7 +45,8 @@ that do the heavy or domain-specific work.
 | `rdw-graph` | Adjacency-list graph, BFS traversal, cycle checks, undo `History<T>` | disk, UI |
 | `rdw-providers` | `LlmClient` / `CitationLookup` traits, `Router`, `TokenBucket`, handoff | UI |
 | `rdw-ipc` | `Request` / `Response` protocol + framing codec | core, UI |
-| `rdw-core` | `Workspace`, seed data, search, `Store` trait | UI toolkit |
+| `rdw-store` | `Store` trait, `SqliteStore` (WAL), `MemoryStore` | core, UI |
+| `rdw-core` | `Workspace`, intents, persistence, seed data, search | UI toolkit |
 | `rdw-desktop` | Window, theme, fonts, one module per screen | — |
 | `xtask` | Repo chores | — |
 
@@ -56,7 +57,7 @@ that do the heavy or domain-specific work.
 - **SQLite (WAL) for persistence** (Phase 1): entities and graph snapshots, behind `store::Store`.
 - **Full-text:** Tantivy (Phase 2) with a Thai-aware tokenizer (ICU4X word segmentation).
 - **Vectors:** start in SQLite (sqlite-vec) and move to LanceDB only if the corpus outgrows it
-  (Phase 3). The `Store` trait keeps this swap local to `rdw-core`.
+  (Phase 3). The `Store` trait (in `rdw-store`) keeps this swap local.
 
 ## Worker protocol (control plane)
 

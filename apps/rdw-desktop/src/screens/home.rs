@@ -30,7 +30,9 @@ pub fn show(app: &mut WorkbenchApp, ui: &mut egui::Ui) {
         });
         ui.add_space(6.0);
     }
-    if open.is_some() {
+    if let Some(id) = open {
+        let project = app.ws.project(&id).cloned();
+        app.states.projects.select(project.as_ref());
         app.screen = Screen::Projects;
     }
 }

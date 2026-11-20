@@ -81,16 +81,51 @@ pub struct Router {
     routes: Vec<(Tier, ModelRef)>,
 }
 
+impl Tier {
+    pub const ALL: [Tier; 4] = [Self::Bulk, Self::Standard, Self::Flagship, Self::DeepResearch];
+}
+
+impl Vendor {
+    pub const ALL: [Vendor; 4] = [Self::OpenAi, Self::Anthropic, Self::Google, Self::Local];
+
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::OpenAi => "OpenAI",
+            Self::Anthropic => "Anthropic",
+            Self::Google => "Google Gemini",
+            Self::Local => "Local (OpenAI-compatible)",
+        }
+    }
+}
+
 impl Router {
+    /// Starting configuration; every entry is editable in Settings.
+    pub fn with_defaults() -> Self {
+        let claude = |m: &str| ModelRef { vendor: Vendor::Anthropic, model: m.into() };
+        let mut r = Self::default();
+        r.set(Tier::Bulk, claude("claude-haiku-5-5"));
+        r.set(Tier::Standard, claude("claude-opus-5-5"));
+        r
+    }
+
     pub fn set(&mut self, tier: Tier, model: ModelRef) {
         self.routes.retain(|(t, _)| *t != tier);
         self.routes.push((tier, model));
     }
 
+    pub fn clear(&mut self, tier: Tier) {
+        self.routes.retain(|(t, _)| *t != tier);
+    }
+
+    /// The model configured for exactly this tier, if any.
+    pub fn get(&self, tier: Tier) -> Option<&ModelRef> {
+        self.routes.iter().find(|(t, _)| *t == tier).map(|(_, m)| m)
+    }
+
     pub fn resolve(&self, tier: Tier) -> Result<&ModelRef, LlmError> {
         self.routes
             .iter()
-            .filter(|(t, _)| *t <= tier)
+            .filter(|(t, m)| *t <= tier && !m.model.trim().is_empty())
             .max_by_key(|(t, _)| *t)
             .map(|(_, m)| m)
             .ok_or(LlmError::NoRoute(tier))

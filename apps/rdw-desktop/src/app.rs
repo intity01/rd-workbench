@@ -1,28 +1,45 @@
 use crate::screen::Screen;
-use crate::screens;
-use crate::theme;
+use crate::screens::{self, ScreenStates};
+use crate::{background, storage, theme};
 use eframe::egui::{self, RichText};
 use rdw_core::Workspace;
-use rdw_core::model::NodeId;
+use rdw_core::store::SqliteStore;
 
-/// UI-only state. Domain state lives in [`Workspace`].
+/// UI-only state. Domain state lives in [`Workspace`]; persistence in `store`.
 #[derive(Debug)]
 pub struct WorkbenchApp {
     pub ws: Workspace,
+    pub store: SqliteStore,
     pub screen: Screen,
     pub query: String,
-    pub selected_node: Option<NodeId>,
     pub status: Option<String>,
+    pub states: ScreenStates,
+    pub jobs: background::Jobs,
 }
 
 impl WorkbenchApp {
     pub fn new() -> Self {
+        let (mut store, mut status) = storage::open_store();
+        let ws = Workspace::open(&mut store).unwrap_or_else(|e| {
+            status = Some(format!("Could not load data ({e}); showing sample data"));
+            Workspace::with_seed()
+        });
+        let states = ScreenStates::load(&store);
         Self {
-            ws: Workspace::with_seed(),
+            ws,
+            store,
             screen: Screen::Home,
             query: String::new(),
-            selected_node: None,
-            status: None,
+            status,
+            states,
+            jobs: background::Jobs::default(),
+        }
+    }
+
+    /// Persists pending changes; called once per frame (no-op when clean).
+    fn autosave(&mut self) {
+        if let Err(e) = self.ws.save(&mut self.store) {
+            self.status = Some(format!("Save failed: {e}"));
         }
     }
 
@@ -65,6 +82,10 @@ impl WorkbenchApp {
     }
 
     fn shortcuts(&mut self, ctx: &egui::Context) {
+        // Leave Ctrl+Z to text fields while one has focus.
+        if ctx.memory(|m| m.focused().is_some()) {
+            return;
+        }
         let (undo, redo) = ctx.input(|i| {
             let cmd = i.modifiers.command;
             (
@@ -84,6 +105,7 @@ impl WorkbenchApp {
 impl eframe::App for WorkbenchApp {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
         self.shortcuts(ui.ctx());
+        screens::poll_background(self);
         egui::Panel::top("top").show(ui, |ui| {
             ui.add_space(6.0);
             self.top_bar(ui);
@@ -91,7 +113,13 @@ impl eframe::App for WorkbenchApp {
         });
         egui::Panel::left("nav").resizable(false).exact_size(184.0).show(ui, |ui| self.nav(ui));
         egui::CentralPanel::default().show(ui, |ui| {
-            egui::ScrollArea::vertical().auto_shrink(false).show(ui, |ui| screens::show(self, ui));
+            if self.screen == Screen::Map {
+                // The map handles its own pan/zoom; no outer scroll area.
+                screens::show(self, ui);
+            } else {
+                egui::ScrollArea::vertical().auto_shrink(false).show(ui, |ui| screens::show(self, ui));
+            }
         });
+        self.autosave();
     }
 }

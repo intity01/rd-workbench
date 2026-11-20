@@ -12,7 +12,9 @@ rdw-model.workspace = true
 rdw-graph.workspace = true
 rdw-providers.workspace = true
 rdw-ipc.workspace = true
+rdw-store.workspace = true
 thiserror.workspace = true
+serde_json.workspace = true
 
 [lints]
 workspace = true

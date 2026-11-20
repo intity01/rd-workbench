@@ -8,6 +8,11 @@ All notable changes are documented here. The format follows
 
 ### Added
 
+- Phase 1: `rdw-store` crate with `SqliteStore` (WAL, JSON documents, migrations) and autosave.
+- Projects create / edit / delete with cascade; Knowledge map pan, zoom, drag, connect, orthogonal edges.
+- Settings screen: API keys in the OS credential store, per-tier model routing.
+- LLM clients for Anthropic, OpenAI, Gemini and OpenAI-compatible local runtimes; Research → Assistant pane.
+- Verify screen: DOI lookup via OpenAlex with Crossref fallback, per-source rate limits, local cache.
 - Cargo workspace: `rdw-model`, `rdw-graph`, `rdw-providers`, `rdw-ipc`, `rdw-core`, `rdw-desktop`, `xtask`.
 - Native egui shell with Home, Projects, Research (deep-research handoff), Library, Knowledge map, Tasks.
 - In-RAM knowledge graph with BFS traversal, cycle detection and undo/redo.

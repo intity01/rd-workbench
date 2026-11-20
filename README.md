@@ -64,6 +64,7 @@ python -m rdw_worker < requests.jsonl   # speaks the rdw-ipc protocol on stdio
 
 ```text
 apps/rdw-desktop     Native egui application (binary `rdw`) — screens, theme, fonts
+crates/rdw-store     SQLite (WAL) persistence behind the Store trait
 crates/rdw-core      Orchestrator: Workspace state, undo history, search, storage trait
 crates/rdw-graph     In-RAM knowledge graph / reasoning DAG with fast traversal
 crates/rdw-model     Domain entities (Project, Source, GNode, Edge, Task…) — no I/O

@@ -2,11 +2,15 @@
 //!
 //! Owns the [`Workspace`] (everything the UI renders) and exposes intent-level
 //! operations. The UI never mutates entities directly; it calls methods here.
-//! Persistence goes through the [`store::Store`] trait (SQLite in Phase 1).
+//! Persistence goes through the [`store::Store`] trait (SQLite in the app).
 
+mod nodes;
+mod persist;
+mod projects;
 pub mod search;
 mod seed;
-pub mod store;
+pub mod sources;
+pub use rdw_store as store;
 mod workspace;
 
 pub use rdw_graph as graph;

@@ -47,3 +47,34 @@ pub struct Project {
     pub mode: ProjectMode,
     pub citation_sources: Vec<String>,
 }
+
+impl Project {
+    /// A new, empty project with sensible defaults.
+    pub fn new(id: ProjectId, name: impl Into<String>) -> Self {
+        Self {
+            id,
+            name: name.into(),
+            description: String::new(),
+            category: String::new(),
+            status: ProjectStatus::Draft,
+            progress: 0,
+            updated: String::new(),
+            question: String::new(),
+            objectives: String::new(),
+            hypotheses: String::new(),
+            scope: String::new(),
+            exclusions: String::new(),
+            output: String::new(),
+            tags: Vec::new(),
+            icon: "cpu".into(),
+            language: Language::Mixed,
+            mode: ProjectMode::LocalFirst,
+            citation_sources: vec!["OpenAlex".into(), "Crossref".into()],
+        }
+    }
+}
+
+impl ProjectStatus {
+    pub const ALL: [ProjectStatus; 5] =
+        [Self::Active, Self::Planning, Self::Draft, Self::Paused, Self::Completed];
+}

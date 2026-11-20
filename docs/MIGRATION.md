@@ -25,14 +25,14 @@ inside `prototype/web`.
 | Screen | Prototype | Native |
 | ------ | --------- | ------ |
 | Home | `features/home` | first cut |
-| Projects | `features/projects` | list + detail (no editing) |
-| Research | `features/research` | handoff only; reader / assistant panes to do |
+| Projects | `features/projects` | list, create, edit, delete |
+| Research | `features/research` | assistant + handoff; reader pane to do |
 | Imports | `features/imports` | to do |
-| Verify | `features/verify` | to do |
+| Verify | `features/verify` | DOI lookup and title check |
 | Library | `features/library` | search (naive) |
-| Knowledge map | `features/map` | static layout, select, delete, undo |
+| Knowledge map | `features/map` | pan, zoom, drag, connect, edit, undo |
 | Tasks | `features/tasks` | empty state |
-| Settings | `features/settings` | to do |
+| Settings | `features/settings` | API keys + routing |
 | Help | `features/help` | to do |
 
 ## Porting checklist (per screen)
@@ -43,3 +43,10 @@ inside `prototype/web`.
 4. Reuse `card` / `title` / theme tokens; add a widget to a shared module when used twice.
 5. `cargo xtask check-size && cargo clippy --workspace --all-targets -- -D warnings`.
 6. Update the table above.
+
+## Retiring the prototype
+
+R&D Workbench is a personal, desktop-only program; nothing web-based ships or stays long-term.
+Once **Imports**, **Reader** and **Help** are ported, delete `prototype/web` in one commit and
+remove the "Prototype" column above along with the `prototype_path()` pointers in
+`apps/rdw-desktop/src/screen.rs`.

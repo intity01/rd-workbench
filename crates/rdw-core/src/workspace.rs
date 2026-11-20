@@ -9,6 +9,8 @@ pub enum WorkspaceError {
     Graph(#[from] GraphError),
     #[error("project {0} not found")]
     MissingProject(ProjectId),
+    #[error(transparent)]
+    Store(#[from] rdw_store::StoreError),
 }
 
 /// All state the UI renders, owned by the core.
@@ -19,7 +21,10 @@ pub struct Workspace {
     pub tasks: Vec<Task>,
     graph: Graph,
     history: History<Graph>,
-    next_id: u64,
+    pub(crate) next_id: u64,
+    /// Set by every mutation; cleared by [`Workspace::save`].
+    pub(crate) dirty: bool,
+    pub(crate) deleted_projects: Vec<ProjectId>,
 }
 
 impl Default for Workspace {
@@ -37,6 +42,8 @@ impl Workspace {
             graph: Graph::new(),
             history: History::new(HISTORY_LIMIT),
             next_id: 1,
+            dirty: false,
+            deleted_projects: Vec::new(),
         }
     }
 
@@ -45,8 +52,10 @@ impl Workspace {
         crate::seed::build()
     }
 
+    /// Replaces the graph and drops undo history (used on load and cascade deletes).
     pub(crate) fn set_graph(&mut self, graph: Graph) {
         self.graph = graph;
+        self.history = History::new(HISTORY_LIMIT);
     }
 
     pub fn graph(&self) -> &Graph {
@@ -61,14 +70,18 @@ impl Workspace {
         self.sources.iter().filter(move |s| &s.project_id == id)
     }
 
-    fn fresh_id(&mut self, prefix: &str) -> String {
+    pub fn is_dirty(&self) -> bool {
+        self.dirty
+    }
+
+    pub(crate) fn fresh_id(&mut self, prefix: &str) -> String {
         let id = format!("{prefix}-{:04}", self.next_id);
         self.next_id += 1;
         id
     }
 
     /// Applies `change` to a copy of the graph; on success records undo history.
-    fn mutate_graph<T>(
+    pub(crate) fn mutate_graph<T>(
         &mut self,
         change: impl FnOnce(&mut Graph) -> Result<T, GraphError>,
     ) -> Result<T, WorkspaceError> {
@@ -76,6 +89,7 @@ impl Workspace {
         let out = change(&mut next)?;
         let before = std::mem::replace(&mut self.graph, next);
         self.history.commit(before);
+        self.dirty = true;
         Ok(out)
     }
 
@@ -110,6 +124,7 @@ impl Workspace {
         match self.history.undo(current) {
             Some(prev) => {
                 self.graph = prev;
+                self.dirty = true;
                 true
             }
             None => false,
@@ -121,6 +136,7 @@ impl Workspace {
         match self.history.redo(current) {
             Some(next) => {
                 self.graph = next;
+                self.dirty = true;
                 true
             }
             None => false,

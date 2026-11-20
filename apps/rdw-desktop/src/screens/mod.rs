@@ -6,12 +6,51 @@ mod library;
 mod map;
 mod projects;
 mod research;
+mod settings;
 mod tasks;
+mod verify;
 
 use crate::app::WorkbenchApp;
+use crate::background::Outcome;
 use crate::screen::Screen;
 use crate::theme;
 use eframe::egui::{self, RichText};
+use rdw_core::model::Project;
+use rdw_core::store::Store;
+
+/// Per-screen UI state, owned by the app.
+#[derive(Debug, Default)]
+pub struct ScreenStates {
+    pub projects: projects::State,
+    pub map: map::State,
+    pub settings: settings::State,
+    pub assistant: research::assistant::State,
+    pub verify: verify::State,
+}
+
+impl ScreenStates {
+    pub fn load(store: &dyn Store) -> Self {
+        Self { settings: settings::State::load(store), ..Self::default() }
+    }
+}
+
+/// Drains results from background work (network calls) into app state.
+pub fn poll_background(app: &mut WorkbenchApp) {
+    for outcome in app.jobs.drain() {
+        match outcome {
+            Outcome::Chat(result) => research::assistant::receive(app, result),
+            Outcome::Doi { doi, source, project, result } => {
+                verify::receive(app, &doi, source, &project, result)
+            }
+        }
+    }
+}
+
+/// The project selected on the Projects screen, else the first one.
+pub fn current_project(app: &WorkbenchApp) -> Option<Project> {
+    let selected = app.states.projects.selected.as_ref().and_then(|id| app.ws.project(id));
+    selected.or_else(|| app.ws.projects.first()).cloned()
+}
 
 pub fn show(app: &mut WorkbenchApp, ui: &mut egui::Ui) {
     match app.screen {
@@ -21,6 +60,8 @@ pub fn show(app: &mut WorkbenchApp, ui: &mut egui::Ui) {
         Screen::Library => library::show(app, ui),
         Screen::Map => map::show(app, ui),
         Screen::Tasks => tasks::show(app, ui),
+        Screen::Verify => verify::show(app, ui),
+        Screen::Settings => settings::show(app, ui),
         other => not_ported(ui, other),
     }
 }

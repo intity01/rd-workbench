@@ -1,22 +1,14 @@
 //! Research screen: deep-research handoff to the user's own ChatGPT / Claude /
 //! Gemini account, in the system browser. See docs/AI_PROVIDERS.md.
 
-use super::{card, title};
 use crate::app::WorkbenchApp;
+use crate::screens::card;
 use crate::theme;
 use eframe::egui::{self, RichText};
+use rdw_core::model::Project;
 use rdw_core::providers::handoff::{Brief, WebResearch};
 
-pub fn show(app: &mut WorkbenchApp, ui: &mut egui::Ui) {
-    title(
-        ui,
-        "Research",
-        "Run deep research in your own account, then import the report here for citation checks.",
-    );
-    let Some(project) = app.ws.projects.first().cloned() else {
-        ui.label("Create a project first.");
-        return;
-    };
+pub fn show(app: &mut WorkbenchApp, ui: &mut egui::Ui, project: &Project) {
     let known: Vec<String> = app.ws.sources_of(&project.id).map(|s| s.title.clone()).collect();
     let brief = Brief {
         question: &project.question,
